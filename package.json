@@ -1,0 +1,23 @@
+{
+  "name": "fix-conflict",
+  "version": "1.0.0",
+  "description": "Interactive terminal merge conflict resolver with language syntax validation.",
+  "bin": {
+    "fix-conflict": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "node test/run.js"
+  },
+  "keywords": [
+    "git",
+    "merge",
+    "conflict",
+    "resolver",
+    "cli"
+  ],
+  "author": "Dhani078 <dhanisepeda@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
