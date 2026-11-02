@@ -1,29 +1,39 @@
 ---
 name: fix-conflict
-description: Interactive terminal merge conflict resolver with language syntax validation. Use when a Git merge, rebase, or cherry-pick results in conflict markers and requires step-by-step resolution.
+description: Git merge conflict analyzer and smart 3-way resolver CLI and agent skill. Resolves conflict blocks with ours, theirs, or union strategies and verifies syntax integrity.
+risk: safe
 version: 1.0.0
-author: Dhani078
 ---
 
-Fix Conflict Skill
+NAME
+fix-conflict - Git merge conflict analyzer and resolver
 
-Use when assisting developers during a stalled Git merge, rebase, or pull with unresolved conflicts.
+SYNOPSIS
+npx fix-conflict [file] [options]
 
-Instructions
+COMMANDS
+- scan [file]: Detect and display conflict blocks.
+- --ours: Resolve using local branch content.
+- --theirs: Resolve using incoming branch content.
+- --union: Concatenate both conflicting blocks.
+- --check: CI mode, exits with code 1 if conflict markers exist.
 
-1. Identify conflicting files:
-   ```bash
-   npx fix-conflict list
-   ```
+OPTIONS
+- --dry-run: Simulate resolution without writing to disk.
+- --json: Output conflict blocks as JSON.
 
-2. Inspect conflict regions:
-   Review the incoming vs current changes to determine business logic intent.
+DETERMINISTIC BEHAVIOR AND INVARIANTS
+1. The tool must never overwrite a conflicting file without saving file.conflict-backup.
+2. In --check mode, if any residual conflict markers (<<<<<<< or >>>>>>>) exist, the exit code must be 1.
+3. If no conflicts are detected, the exit code must be 0.
+4. Resolved files must be checked for parseable syntax before finalizing.
 
-3. Resolve conflict cleanly:
-   - Interactive terminal: run `npx fix-conflict`
-   - Automated rule: `npx fix-conflict --strategy ours` or `--strategy theirs`
+AGENT INTEGRATION INSTRUCTIONS
+When resolving Git merge conflicts automatically:
+1. Run npx fix-conflict --json to inspect conflict blocks.
+2. Determine appropriate strategy (ours, theirs, or union).
+3. Execute npx fix-conflict --<strategy> <file>.
+4. Run tests to confirm behavioral correctness.
 
-4. Verify syntax and commit:
-   - Confirm that all `<<<<<<<`, `=======`, and `>>>>>>>` markers are eliminated.
-   - Run project test runner to ensure merged code compiles cleanly.
-   - Stage resolved files: `git add <file>`.
+AUTHOR
+Dhani078 (dhanisepeda@gmail.com)

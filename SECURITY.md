@@ -1,12 +1,11 @@
 SECURITY POLICY: fix-conflict
 
-Safety Commitments
+1. Security Posture
+fix-conflict prevents catastrophic deployment of residual conflict markers:
+- Zero Network Connections: Operates completely offline with zero telemetry.
+- Safe Parsing: Does not execute code contained within conflicting blocks.
+- Non-Destructive: Backup files are created prior to writing changes.
 
-- Local Disk Only: No remote network traffic is produced.
-- Automatic Backups: Original conflicted files are backed up to `.bak` files prior to rewriting so work can never be permanently lost.
-
-Vulnerability Reporting
-
-Report issues to:
+2. Vulnerability Disclosure
 - Maintainer: Dhani078
-- Email: dhanisepeda@gmail.com
+- Security Contact: dhanisepeda@gmail.com

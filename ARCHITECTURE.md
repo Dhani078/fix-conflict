@@ -1,46 +1,42 @@
 ARCHITECTURE: fix-conflict
 
-Data Flow Diagram
+1. Architectural Pipeline
 
 ```
-+-----------------------------------------------------------+
-|                        CLI Entrypoint                     |
-|                    (bin/fix-conflict.js)                  |
-+-----------------------------+-----------------------------+
-                              |
-                              v
-+-----------------------------------------------------------+
-|                     Conflict Scanner                      |
-|   - Scans git status --porcelain for UU / conflict flags  |
-|   - Streams file lines looking for <<<<<<< markers        |
-+-----------------------------+-----------------------------+
-                              |
-                              v
-+-----------------------------------------------------------+
-|                     Block Segmenter                       |
-|   - Parses: Ours block, Separator, Theirs block           |
-|   - Preserves surrounding indentation and whitespace      |
-+-----------------------------+-----------------------------+
-                              |
-                              v
-+-----------------------------------------------------------+
-|                   Resolution Controller                   |
-|   - Prompts user (Ours / Theirs / Both / Edit)            |
-|   - Assembles unified resolved buffer                     |
-+-----------------------------+-----------------------------+
-                              |
-                              v
-+-----------------------------------------------------------+
-|                    Syntax Verification                    |
-|   - Invokes language-specific syntax compiler             |
-|   - Rollback to .bak if syntax verification fails         |
-+-----------------------------------------------------------+
++-------------------------------------------------------------+
+|                      CONFLICT DETECTOR                      |
+|   - Reads target file or recursively scans repository       |
+|   - Matches regex pattern for <<<<<<<, =======, >>>>>>>     |
++------------------------------+------------------------------+
+                               |
+                               v
++-------------------------------------------------------------+
+|                     BLOCK PARSER & AST                      |
+|   - Extracts line ranges and reference identifiers          |
+|   - Separates ours chunk and theirs chunk                   |
++------------------------------+------------------------------+
+                               |
+                               v
++-------------------------------------------------------------+
+|                     STRATEGY RESOLVER                       |
+|   - Applies selected resolution (ours, theirs, union)       |
+|   - Strips markers and reconstitutes file string            |
++------------------------------+------------------------------+
+                               |
+                               v
++-------------------------------------------------------------+
+|                   SYNTAX VALIDATOR & SAVER                  |
+|   - Creates file.conflict-backup                            |
+|   - Runs syntax check (JSON.parse / Node syntax check)      |
+|   - Writes resolved file to filesystem                      |
++-------------------------------------------------------------+
 ```
 
-Component Responsibilities
+2. Standard Library Mapping
+- Filesystem: node:fs readFileSync, writeFileSync, readdirSync.
+- Path Resolution: node:path resolve, join.
+- Process: node:process cwd, exit.
 
-- bin/fix-conflict.js: Main interactive terminal loop.
-- src/scanner.js: Repository status and conflict detector.
-- src/parser.js: Conflict marker block parser.
-- src/resolver.js: Block merger and file rewriter.
-- src/validator.js: In-memory syntax compiler.
+3. Performance Guarantees
+- Sub-20ms resolution time on standard source files.
+- Zero npm package dependencies.

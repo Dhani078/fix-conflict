@@ -1,7 +1,13 @@
 FAQ: fix-conflict
 
-Q: Can fix-conflict corrupt my source code?
-A: Every file is automatically backed up to `<filename>.bak` prior to resolution. If the post-resolution syntax compiler detects syntax errors, the file is immediately reverted.
+Q1: Does fix-conflict delete my original file?
+A: Never. When modifying any file, fix-conflict creates a file.conflict-backup copy containing the exact original unresolved markers.
 
-Q: How does the syntax validation work?
-A: For JavaScript and TypeScript, it compiles the resolved code in an isolated Node.js VM context to guarantee zero syntax and parsing exceptions.
+Q2: Can fix-conflict resolve conflicts across an entire repository at once?
+A: Yes. Running npx fix-conflict --ours or --theirs without specifying a file argument scans and resolves all conflicting files in the repository.
+
+Q3: What happens if a resolved file has syntax errors?
+A: fix-conflict runs a syntax verification check on JSON and JavaScript files after resolution. If syntax errors are found, it alerts you immediately.
+
+Q4: Does fix-conflict run git add automatically?
+A: No. fix-conflict safely leaves staging to you so you can review changes with git diff before staging.
